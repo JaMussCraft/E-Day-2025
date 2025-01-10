@@ -17,6 +17,7 @@
     <p>This is a simple website created using HTML, CSS, and JavaScript.</p>
     <button id="clickButton">Click Me</button>
     <p id="message">my message</p>
+
     <h2>Demo: Detecting Images</h2>
     <p><b>Click on an image below</b> to see the key landmarks of the hands.</p>
 
@@ -30,6 +31,16 @@
     </div>
 
     <canvas id="drawingCanvas" width="400" height="400" style="border:1px solid #000;"></canvas>
+
+    <div id="liveView" class="videoView">
+        <button id="webcamButton">
+            ENABLE WEBCAM
+        </button>
+        <div style="position: relative;">
+            <video id="webcam" style="position: abso" autoplay playsinline></video>
+            <canvas class="output_canvas" id="output_canvas" style="position: absolute; left: 0px; top: 0px;"></canvas>
+        </div>
+    </div>
 
 
     <script type="module" src="script.js"></script>

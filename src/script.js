@@ -1,7 +1,7 @@
 import {
   HandLandmarker,
   FilesetResolver,
-  DrawingUtils,
+  GestureRecognizer,
 } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js'
 
 import 'https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js'
@@ -16,31 +16,38 @@ button.addEventListener('click', () => {
   message.textContent = 'Button clicked! Welcome to my website.'
 })
 
-let handLandmarker = undefined
+let handLandmarker = null
+let gestureRecognizer = null
 let runningMode = 'IMAGE'
-let enableWebcamButton
+let enableWebcamButton = null
 let webcamRunning = false
+const radius = 10
+const strokes = []
+let strokeCoors = []
 
-const createHandLandmarker = async () => {
+const loadModels = async () => {
   const vision = await FilesetResolver.forVisionTasks(
-    // path/to/wasm/root
     'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm'
   )
 
   handLandmarker = await HandLandmarker.createFromOptions(vision, {
     baseOptions: {
       modelAssetPath: '../public/models/hand_landmarker.task',
+      delegate: 'GPU',
     },
     runningMode: runningMode,
-    numHands: 2,
+  })
+
+  gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath: '../public/models/gesture_recognizer.task',
+      delegate: 'GPU',
+    },
+    runningMode: runningMode,
+    min_hand_detection_confidence: 0.85,
   })
 }
-
-createHandLandmarker()
-
-const drawPoint = (context, x, y, radius, color) => {
-  context.fillRect(x - radius, y - radius, radius, radius)
-}
+loadModels()
 
 /********************************************************************
 // Demo 1: Grab a bunch of images from the page and detection them
@@ -91,8 +98,12 @@ async function handleClick(event) {
     cxt.fillStyle = 'red'
     for (const { x, y } of landmarks) {
       // console.log('drawing on ', x * event.target.width, y * event.target.height)
-      const radius = 50
-      cxt.fillRect(x * event.target.naturalWidth - radius, y * event.target.naturalHeight - radius, radius, radius)
+      cxt.fillRect(
+        x * event.target.naturalWidth - radius,
+        y * event.target.naturalHeight - radius,
+        radius,
+        radius
+      )
     }
     // drawConnectors(cxt, landmarks, HandLandmarker.HAND_CONNECTIONS, {
     //   color: "#00FF00",
@@ -100,13 +111,136 @@ async function handleClick(event) {
     // });
     // drawLandmarks(cxt, landmarks, { color: "#FF0000", lineWidth: 1 });
   }
-  console.log('demo completed')
 }
 
 // Testing Canvas
 const canvas = document.getElementById('drawingCanvas')
 const ctx = canvas.getContext('2d')
-
-// Draw a square
 ctx.fillStyle = 'blue'
 ctx.fillRect(50, 50, 100, 100)
+
+/********************************************************************
+// Demo 2: Continuously grab image from webcam stream and detect it.
+********************************************************************/
+
+const video = document.getElementById('webcam')
+const canvasElement = document.getElementById('output_canvas')
+const videoCtx = canvasElement.getContext('2d')
+
+const hasGetUserMedia = () => !!navigator.mediaDevices?.getUserMedia
+
+if (hasGetUserMedia()) {
+  enableWebcamButton = document.getElementById('webcamButton')
+  enableWebcamButton.addEventListener('click', enableCam)
+} else {
+  console.warn('getUserMedia() is not supported by your browser')
+}
+
+function enableCam(event) {
+  if (!gestureRecognizer) {
+    console.log('Model not loaded yet')
+    return
+  }
+
+  if (webcamRunning === true) {
+    webcamRunning = false
+    enableWebcamButton.innerText = 'ENABLE PREDICTIONS'
+  } else {
+    webcamRunning = true
+    enableWebcamButton.innerText = 'DISABLE PREDICTIONS'
+  }
+
+  // Activate the webcam stream.
+  navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+    video.srcObject = stream
+    video.addEventListener('loadeddata', predictWebcam)
+  })
+}
+
+let lastVideoTime = -1
+let results = undefined
+
+async function predictWebcam() {
+  canvasElement.style.width = video.videoWidth
+  canvasElement.style.height = video.videoHeight
+  canvasElement.width = video.videoWidth
+  canvasElement.height = video.videoHeight
+
+  if (runningMode === 'IMAGE') {
+    runningMode = 'VIDEO'
+    await gestureRecognizer.setOptions({ runningMode: 'VIDEO' })
+  }
+
+  let startTimeMs = performance.now()
+
+  if (lastVideoTime !== video.currentTime) {
+    lastVideoTime = video.currentTime
+    results = gestureRecognizer.recognizeForVideo(video, startTimeMs)
+  }
+
+  // videoCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
+
+  videoCtx.save()
+
+  if (results.gestures.length > 0) {
+    const gesture = results.gestures[0][0]
+    const categoryName = gesture.categoryName
+    const score = gesture.score
+    console.log(score)
+
+    if (categoryName == 'Pointing_Up') {
+      for (const landmarks of results.landmarks) {
+        const { x, y } = landmarks[8]
+
+        strokeCoors.push({
+          x: x,
+          y: y,
+        })
+
+        videoCtx.strokeStyle = 'red'
+        videoCtx.lineWidth = 5
+        videoCtx.beginPath()
+
+        strokeCoors.forEach((point, index) => {
+          if (index === 0) {
+            videoCtx.moveTo(point.x * video.videoWidth, point.y * video.videoHeight)
+          } else {
+            videoCtx.lineTo(point.x * video.videoWidth, point.y * video.videoHeight)
+          }
+        })
+
+        videoCtx.stroke()
+      }
+    } else {
+      if (strokeCoors.length) {
+        strokes.push(strokeCoors)
+        strokeCoors = []
+      }
+    }
+  }
+
+  // Draw Strokes
+  videoCtx.strokeStyle = 'red'
+  videoCtx.lineWidth = 5
+  videoCtx.beginPath()
+
+  strokes.forEach((stroke) => {
+    stroke.forEach((point, index) => {
+      if (index === 0) {
+        videoCtx.moveTo(point.x * video.videoWidth, point.y * video.videoHeight)
+      } else {
+        videoCtx.lineTo(point.x * video.videoWidth, point.y * video.videoHeight)
+      }
+    })
+  })
+
+  videoCtx.stroke()
+
+  videoCtx.restore()
+
+  console.log(strokes.length)
+
+  if (webcamRunning === true) {
+    window.requestAnimationFrame(predictWebcam)
+  }
+}
