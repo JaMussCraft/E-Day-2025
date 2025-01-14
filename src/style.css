@@ -32,27 +32,69 @@ button:hover {
   background-color: #45a049;
 }
 
-#message {
-  margin-top: 1rem;
-  font-size: 18px;
-  color: #333;
+#webcamButton {
+  display: block;
+  margin: 50px auto;
+  padding: 20px 40px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 }
 
+#webcamButton:hover {
+  background-color: #ddd;
+}
 
-/* Copyright 2023 The MediaPipe Authors.
+#doodleGuessDisplay {
+  margin-top: 10px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  min-height: 50px;
+  width: 610px;
+  font-family: Arial, sans-serif;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+#webcamDisplay {
+  position: relative;
+}
 
-     http://www.apache.org/licenses/LICENSE-2.0
+#promptDisplay {
+  margin-top: 10px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #e17140;
+  min-height: 50px;
+  width: 610px;
+  font-size: 2em;
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  text-align: center;
+  color: #eaefdb;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License. */
+#gameView {
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
 
+#resultPopup {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 2px solid #ccc;
+  padding: 1em;
+  text-align: center;
+}
+
+/* Mediapipe */
 
 h1 {
   color: #007f8b;

@@ -14,36 +14,46 @@
         <h1>Air Draw</h1>
     </header>
 
-    <h2>This is a demo built for E-Day 2025 at the University of Kentucky and Nosu AI Hackathon. The idea is to recreate the "Quick, Draw!" game from Google with a different way to draw and recognize the doodle.</h2>
+    <h2>This is a demo built for E-Day 2025 at the University of Kentucky and Nosu AI Hackathon. The idea is to recreate
+        the "Quick, Draw!" game from Google with a different way to draw and recognize the doodle.</h2>
     <h2>Explanations:</h2>
     <p>
-        Instead of drawing with your fingers on a screen, you will "draw in the air". Simply face your webcam and face your right hand with your index finger pointing up to the webcam and start drawing!
-        Your doodle will be recognized by an LLM every 2 seconds or so, if the LLM guesses right then you win! You will need to make the LLM guess right under 20 seconds!
+        Instead of drawing with your fingers on a screen, you will "draw in the air". Simply face your webcam and face
+        your right hand with your index finger pointing up to the webcam and start drawing!
+        Your doodle will be recognized by an LLM every 2 seconds or so, if the LLM guesses right then you win! You will
+        need to make the LLM guess right under 20 seconds!
     </p>
     <h2>Instructions:</h2>
-    <p>Click on start to begin the game. You will need to give your browser permission to access your webcam. You goal is to draw a doodle of the given prompt under 20 seconds! </p>
+    <p>Click on start to begin the game. You will need to give your browser permission to access your webcam. You goal
+        is to draw a doodle of the given prompt under 20 seconds! </p>
 
-    <div id="liveView" class="videoView">
-        <button id="webcamButton">
-            ENABLE WEBCAM
-        </button>
-        <div style="position: relative;">
-            <video id="webcam" style="position: abso" autoplay playsinline></video>
-            <canvas class="output_canvas" id="output_canvas" style="position: absolute; left: 0px; top: 0px;"></canvas>
+    <button id="webcamButton">
+        START (ENABLE WEBCAM)
+    </button>
+    <div id="gameView">
+
+        <div class="videoView">
+
+            <div id="promptDisplay" style="position: relative;">
+                Drawing your item...
+            </div>
+
+            <div style="position: relative;">
+                <video id="webcam" style="position: abso" autoplay playsinline></video>
+                <canvas class="output_canvas" id="output_canvas"
+                    style="position: absolute; left: 0px; top: 0px;"></canvas>
+            </div>
+
+            <div id="doodleGuessDisplay">
+                LLM's Guess:
+            </div>
+
         </div>
-        <div id="doodleGuessDisplay" style="
-        margin-top: 10px;
-        padding: 15px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        min-height: 50px;
-        width: 100%;
-        font-family: Arial, sans-serif;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    ">
-            LLM's Guess:
-        </div>
+    </div>
+
+    <div id="resultPopup">
+        <h2 id="resultText">Time's up!</h2>
+        <button id="restartButton">Restart</button>
     </div>
 
     <script type="module" src="script.js"></script>
