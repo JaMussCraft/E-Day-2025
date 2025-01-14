@@ -4,9 +4,11 @@
   "description": "This is a project for Engineering Day at the University of Kentucky in 2025. It builds upon the Quick Draw and Teachable Machine to create something interactive to demo for K-12.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "http-server ./src"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
+  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JaMussCraft/E-Day-2025.git"
@@ -19,5 +21,17 @@
   "bugs": {
     "url": "https://github.com/JaMussCraft/E-Day-2025/issues"
   },
-  "homepage": "https://github.com/JaMussCraft/E-Day-2025#readme"
+  "homepage": "https://github.com/JaMussCraft/E-Day-2025#readme",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "form-data": "^4.0.1",
+    "llamaai": "^1.0.4",
+    "openai": "^4.78.1"
+  },
+  "devDependencies": {
+    "vite": "^6.0.7"
+  }
 }

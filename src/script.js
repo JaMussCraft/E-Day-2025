@@ -6,16 +6,6 @@ import {
 
 import 'https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js'
 
-// Get the button element
-const button = document.getElementById('clickButton')
-
-// Add a click event listener to the button
-button.addEventListener('click', () => {
-  // Get the message element and set its text content
-  const message = document.getElementById('message')
-  message.textContent = 'Button clicked! Welcome to my website.'
-})
-
 let handLandmarker = null
 let gestureRecognizer = null
 let runningMode = 'IMAGE'
@@ -32,7 +22,7 @@ const loadModels = async () => {
 
   handLandmarker = await HandLandmarker.createFromOptions(vision, {
     baseOptions: {
-      modelAssetPath: '../public/models/hand_landmarker.task',
+      modelAssetPath: '/models/hand_landmarker.task',
       delegate: 'GPU',
     },
     runningMode: runningMode,
@@ -40,7 +30,7 @@ const loadModels = async () => {
 
   gestureRecognizer = await GestureRecognizer.createFromOptions(vision, {
     baseOptions: {
-      modelAssetPath: '../public/models/gesture_recognizer.task',
+      modelAssetPath: '/models/gesture_recognizer.task',
       delegate: 'GPU',
     },
     runningMode: runningMode,
@@ -113,12 +103,6 @@ async function handleClick(event) {
   }
 }
 
-// Testing Canvas
-const canvas = document.getElementById('drawingCanvas')
-const ctx = canvas.getContext('2d')
-ctx.fillStyle = 'blue'
-ctx.fillRect(50, 50, 100, 100)
-
 /********************************************************************
 // Demo 2: Continuously grab image from webcam stream and detect it.
 ********************************************************************/
@@ -159,7 +143,9 @@ function enableCam(event) {
 
 let lastVideoTime = -1
 let results = undefined
+let gameCompleted = false
 
+let frame = 1
 async function predictWebcam() {
   canvasElement.style.width = video.videoWidth
   canvasElement.style.height = video.videoHeight
@@ -171,76 +157,137 @@ async function predictWebcam() {
     await gestureRecognizer.setOptions({ runningMode: 'VIDEO' })
   }
 
-  let startTimeMs = performance.now()
+  if (!gameCompleted) {
+    let startTimeMs = performance.now()
 
-  if (lastVideoTime !== video.currentTime) {
-    lastVideoTime = video.currentTime
-    results = gestureRecognizer.recognizeForVideo(video, startTimeMs)
-  }
+    if (lastVideoTime !== video.currentTime) {
+      lastVideoTime = video.currentTime
+      results = gestureRecognizer.recognizeForVideo(video, startTimeMs)
+    }
 
-  // videoCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
+    // videoCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
 
-  videoCtx.save()
+    videoCtx.save()
 
-  if (results.gestures.length > 0) {
-    const gesture = results.gestures[0][0]
-    const categoryName = gesture.categoryName
-    const score = gesture.score
-    console.log(score)
+    if (results.gestures.length > 0) {
+      const gesture = results.gestures[0][0]
+      const categoryName = gesture.categoryName
+      const score = gesture.score
 
-    if (categoryName == 'Pointing_Up') {
-      for (const landmarks of results.landmarks) {
-        const { x, y } = landmarks[8]
+      if (categoryName == 'Pointing_Up') {
+        for (const landmarks of results.landmarks) {
+          const { x, y } = landmarks[8]
 
-        strokeCoors.push({
-          x: x,
-          y: y,
-        })
+          strokeCoors.push({
+            x: x,
+            y: y,
+          })
 
-        videoCtx.strokeStyle = 'red'
-        videoCtx.lineWidth = 5
-        videoCtx.beginPath()
+          videoCtx.strokeStyle = 'red'
+          videoCtx.lineWidth = 5
+          videoCtx.beginPath()
 
-        strokeCoors.forEach((point, index) => {
-          if (index === 0) {
-            videoCtx.moveTo(point.x * video.videoWidth, point.y * video.videoHeight)
-          } else {
-            videoCtx.lineTo(point.x * video.videoWidth, point.y * video.videoHeight)
-          }
-        })
+          strokeCoors.forEach((point, index) => {
+            if (index === 0) {
+              videoCtx.moveTo(point.x * video.videoWidth, point.y * video.videoHeight)
+            } else {
+              videoCtx.lineTo(point.x * video.videoWidth, point.y * video.videoHeight)
+            }
+          })
 
-        videoCtx.stroke()
-      }
-    } else {
-      if (strokeCoors.length) {
-        strokes.push(strokeCoors)
-        strokeCoors = []
+          videoCtx.stroke()
+        }
+      } else {
+        if (strokeCoors.length) {
+          strokes.push(strokeCoors)
+          strokeCoors = []
+        }
       }
     }
+
+    // Draw Strokes
+    videoCtx.strokeStyle = 'red'
+    videoCtx.lineWidth = 5
+    videoCtx.beginPath()
+
+    strokes.forEach((stroke) => {
+      stroke.forEach((point, index) => {
+        if (index === 0) {
+          videoCtx.moveTo(point.x * video.videoWidth, point.y * video.videoHeight)
+        } else {
+          videoCtx.lineTo(point.x * video.videoWidth, point.y * video.videoHeight)
+        }
+      })
+    })
+
+    videoCtx.stroke()
+
+    videoCtx.restore()
   }
 
-  // Draw Strokes
-  videoCtx.strokeStyle = 'red'
-  videoCtx.lineWidth = 5
-  videoCtx.beginPath()
-
-  strokes.forEach((stroke) => {
-    stroke.forEach((point, index) => {
-      if (index === 0) {
-        videoCtx.moveTo(point.x * video.videoWidth, point.y * video.videoHeight)
-      } else {
-        videoCtx.lineTo(point.x * video.videoWidth, point.y * video.videoHeight)
-      }
-    })
-  })
-
-  videoCtx.stroke()
-
-  videoCtx.restore()
-
-  console.log(strokes.length)
+  
+  if (frame % 500 == 0  && !gameCompleted) {
+    const base64String = canvasElement.toDataURL('image/jpeg')
+    queryOpenAiImage(
+      canvasElement.toDataURL('image/jpeg'),
+      'Give me a noun of the object of this image doodle. Only response in one noun.'
+    )
+    console.log('game completed!')
+    // gameCompleted = true
+  }
+  // console.log(frame)
 
   if (webcamRunning === true) {
     window.requestAnimationFrame(predictWebcam)
+    frame += 1
   }
 }
+
+// Testing Canvas
+const canvas = document.getElementById('drawingCanvas')
+const ctx = canvas.getContext('2d')
+ctx.fillStyle = 'blue'
+ctx.fillRect(50, 50, 100, 100)
+const base64String = canvas.toDataURL('image/jpeg')
+
+// OPENAI API
+import OpenAI from 'openai'
+
+const apiKey =
+  'asdf'
+const openai = new OpenAI({
+  apiKey: apiKey,
+  dangerouslyAllowBrowser: true,
+})
+
+const doodleGuessElement = document.getElementById('doodleGuessDisplay')
+
+async function queryOpenAiImage(imageDataURL, followQuestion) {
+  const response = await openai.chat.completions.create({
+    model: 'gpt-4o',
+    messages: [
+      {
+        role: 'user',
+        content: [
+          {
+            type: 'image_url',
+            image_url: {
+              url: imageDataURL,
+            },
+          },
+          {
+            type: 'text',
+            text: followQuestion,
+          },
+        ],
+      },
+    ],
+    response_format: {
+      type: 'text',
+    },
+  })
+
+  doodleGuessElement.innerHTML = "LLM's Guess: " + response.choices[0].message.content
+}
+
+// queryOpenAiImage(base64String, 'what is this image simply')

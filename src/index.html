@@ -11,12 +11,10 @@
 
 <body>
     <header>
-        <h1>Welcome to My Simple Website</h1>
+        <h1>Air Draw</h1>
     </header>
 
-    <p>This is a simple website created using HTML, CSS, and JavaScript.</p>
-    <button id="clickButton">Click Me</button>
-    <p id="message">my message</p>
+    <p>This is a demo built for E-Day 2025 at the University of Kentucky</p>
 
     <h2>Demo: Detecting Images</h2>
     <p><b>Click on an image below</b> to see the key landmarks of the hands.</p>
@@ -32,6 +30,8 @@
 
     <canvas id="drawingCanvas" width="400" height="400" style="border:1px solid #000;"></canvas>
 
+    <h2>Demo: Air Draw</h2>
+    <p><b>Try to draw a doodle of the given every-day object under 20 seconds and get the LLM to guess it right!</p>
     <div id="liveView" class="videoView">
         <button id="webcamButton">
             ENABLE WEBCAM
@@ -39,6 +39,19 @@
         <div style="position: relative;">
             <video id="webcam" style="position: abso" autoplay playsinline></video>
             <canvas class="output_canvas" id="output_canvas" style="position: absolute; left: 0px; top: 0px;"></canvas>
+        </div>
+        <div id="doodleGuessDisplay" style="
+        margin-top: 10px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        min-height: 50px;
+        width: 100%;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    ">
+            LLM's Guess:
         </div>
     </div>
 
