@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Website</title>
+    <!-- <script type='module' src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js" crossorigin="anonymous"></script> -->
+  <script type="module" crossorigin src="./assets/index-CfZIBfMS.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-7QRLn9JS.css">
+</head>
+
+<body>
+    <header>
+        <h1>Air Draw</h1>
+    </header>
+
+    <p>This is a demo built for E-Day 2025 at the University of Kentucky</p>
+
+    <h2>Demo: Detecting Images</h2>
+    <p><b>Click on an image below</b> to see the key landmarks of the hands.</p>
+
+    <div class="detectOnClick">
+        <img src="https://assets.codepen.io/9177687/hand-ge4ca13f5d_1920.jpg" width="100%" crossorigin="anonymous"
+            title="Click to get detection!" />
+    </div>
+    <div class="detectOnClick">
+        <img src="https://assets.codepen.io/9177687/couple-gb7cb5db4c_1920.jpg" width="100%" crossorigin="anonymous"
+            title="Click to get detection!" />
+    </div>
+
+    <canvas id="drawingCanvas" width="400" height="400" style="border:1px solid #000;"></canvas>
+
+    <h2>Demo: Air Draw</h2>
+    <p><b>Try to draw a doodle of the given every-day object under 20 seconds and get the LLM to guess it right!</p>
+    <div id="liveView" class="videoView">
+        <button id="webcamButton">
+            ENABLE WEBCAM
+        </button>
+        <div style="position: relative;">
+            <video id="webcam" style="position: abso" autoplay playsinline></video>
+            <canvas class="output_canvas" id="output_canvas" style="position: absolute; left: 0px; top: 0px;"></canvas>
+        </div>
+        <div id="doodleGuessDisplay" style="
+        margin-top: 10px;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        min-height: 50px;
+        width: 100%;
+        font-family: Arial, sans-serif;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    ">
+            LLM's Guess:
+        </div>
+    </div>
+
+
+</body>
+
+</html>

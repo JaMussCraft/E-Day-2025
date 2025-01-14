@@ -14,24 +14,15 @@
         <h1>Air Draw</h1>
     </header>
 
-    <p>This is a demo built for E-Day 2025 at the University of Kentucky</p>
+    <h2>This is a demo built for E-Day 2025 at the University of Kentucky and Nosu AI Hackathon. The idea is to recreate the "Quick, Draw!" game from Google with a different way to draw and recognize the doodle.</h2>
+    <h2>Explanations:</h2>
+    <p>
+        Instead of drawing with your fingers on a screen, you will "draw in the air". Simply face your webcam and face your right hand with your index finger pointing up to the webcam and start drawing!
+        Your doodle will be recognized by an LLM every 2 seconds or so, if the LLM guesses right then you win! You will need to make the LLM guess right under 20 seconds!
+    </p>
+    <h2>Instructions:</h2>
+    <p>Click on start to begin the game. You will need to give your browser permission to access your webcam. You goal is to draw a doodle of the given prompt under 20 seconds! </p>
 
-    <h2>Demo: Detecting Images</h2>
-    <p><b>Click on an image below</b> to see the key landmarks of the hands.</p>
-
-    <div class="detectOnClick">
-        <img src="https://assets.codepen.io/9177687/hand-ge4ca13f5d_1920.jpg" width="100%" crossorigin="anonymous"
-            title="Click to get detection!" />
-    </div>
-    <div class="detectOnClick">
-        <img src="https://assets.codepen.io/9177687/couple-gb7cb5db4c_1920.jpg" width="100%" crossorigin="anonymous"
-            title="Click to get detection!" />
-    </div>
-
-    <canvas id="drawingCanvas" width="400" height="400" style="border:1px solid #000;"></canvas>
-
-    <h2>Demo: Air Draw</h2>
-    <p><b>Try to draw a doodle of the given every-day object under 20 seconds and get the LLM to guess it right!</p>
     <div id="liveView" class="videoView">
         <button id="webcamButton">
             ENABLE WEBCAM
@@ -54,7 +45,6 @@
             LLM's Guess:
         </div>
     </div>
-
 
     <script type="module" src="script.js"></script>
 </body>
