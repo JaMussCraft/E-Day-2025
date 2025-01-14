@@ -77,8 +77,8 @@ button:hover {
 }
 
 #gameView {
-  display: none;
-  justify-content: center;
+  /* display: none; */
+  /* justify-content: center; */
   align-items: center;
 }
 
@@ -185,4 +185,51 @@ footer {
 
 .detectOnClick img {
   width: 100%;
+}
+
+.game-container {
+  display: none;
+  gap: 20px;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 20px;
+}
+
+.controls-panel {
+  background: #f5f5f5;
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 200px;
+}
+
+.control-group {
+  margin-bottom: 15px;
+}
+
+.control-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+#drawingColor {
+  width: 100%;
+  padding: 5px;
+}
+
+#temperature {
+  width: 100%;
+}
+
+#clearButton {
+  width: 100%;
+  padding: 8px;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#clearButton:hover {
+  background: #0056b3;
 }

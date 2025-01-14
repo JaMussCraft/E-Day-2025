@@ -6,6 +6,7 @@ import {
 import 'https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js'
 
 import OpenAI from 'openai'
+import { prompts } from './prompts.js'
 
 // OPENAI API
 const apiKey = '1234'
@@ -18,6 +19,7 @@ const doodleGuessElement = document.getElementById('doodleGuessDisplay')
 const resultPopup = document.getElementById('resultPopup')
 const resultText = document.getElementById('resultText')
 const restartButton = document.getElementById('restartButton')
+const restartButtonControl = document.getElementById('restartButtonControl')
 
 const video = document.getElementById('webcam')
 const canvasElement = document.getElementById('output_canvas')
@@ -25,6 +27,10 @@ const videoCtx = canvasElement.getContext('2d')
 const gameView = document.getElementById('gameView')
 const webcamButton = document.getElementById('webcamButton')
 const promptDisplay = document.getElementById('promptDisplay')
+
+const gameContainer = document.getElementById('gameContainer')
+const temperatureInput = document.getElementById('temperature')
+const temperatureValueSpan = document.getElementById('temperatureValue')
 
 // Game Logic
 const GameStates = {
@@ -36,6 +42,8 @@ let gameState = GameStates.NOT_STARTED
 let frame = 1
 
 let prompt = null
+
+let temperature = 1
 
 async function llmGuess(imageDataURL, followQuestion, frame) {
   const response = await openai.chat.completions.create({
@@ -60,6 +68,7 @@ async function llmGuess(imageDataURL, followQuestion, frame) {
     response_format: {
       type: 'text',
     },
+    temperature: temperature,
   })
   const guess = response.choices[0].message.content
   console.log(guess, prompt, 'correct?', guess === prompt)
@@ -79,17 +88,17 @@ const resetGame = () => {
   gameState = GameStates.NOT_STARTED
   console.log('resetted game')
 
-  videoCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
-  
+  // videoCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
+  strokes = []
+  strokeCoors = []
+
   doodleGuessElement.innerHTML = "LLM's Guess:"
   promptDisplay.innerHTML = 'Drawing your item...'
   setTimeout(() => {
     const randomIndex = Math.floor(Math.random() * prompts.length)
     prompt = prompts[randomIndex]
     promptDisplay.innerHTML = `Try to draw a ${prompt} !`
-    
-  }, 2500);
-
+  }, 1500)
 }
 
 // MEDIAPIPE MODEL
@@ -97,7 +106,7 @@ let gestureRecognizer = null
 let runningMode = 'IMAGE'
 let webcamRunning = false
 const radius = 10
-const strokes = []
+let strokes = []
 let strokeCoors = []
 
 const loadModels = async () => {
@@ -118,354 +127,6 @@ loadModels()
 
 // AIR DRAW
 
-const prompts = [
-  'aircraft carrier',
-  'airplane',
-  'alarm clock',
-  'ambulance',
-  'angel',
-  'animal migration',
-  'ant',
-  'anvil',
-  'apple',
-  'arm',
-  'asparagus',
-  'axe',
-  'backpack',
-  'banana',
-  'bandage',
-  'barn',
-  'baseball',
-  'baseball bat',
-  'basket',
-  'basketball',
-  'bat',
-  'bathtub',
-  'beach',
-  'bear',
-  'beard',
-  'bed',
-  'bee',
-  'belt',
-  'bench',
-  'bicycle',
-  'binoculars',
-  'bird',
-  'birthday cake',
-  'blackberry',
-  'blueberry',
-  'book',
-  'boomerang',
-  'bottlecap',
-  'bowtie',
-  'bracelet',
-  'brain',
-  'bread',
-  'bridge',
-  'broccoli',
-  'broom',
-  'bucket',
-  'bulldozer',
-  'bus',
-  'bush',
-  'butterfly',
-  'cactus',
-  'cake',
-  'calculator',
-  'calendar',
-  'camel',
-  'camera',
-  'camouflage',
-  'campfire',
-  'candle',
-  'cannon',
-  'canoe',
-  'car',
-  'carrot',
-  'castle',
-  'cat',
-  'ceiling fan',
-  'cello',
-  'cell phone',
-  'chair',
-  'chandelier',
-  'church',
-  'circle',
-  'clarinet',
-  'clock',
-  'cloud',
-  'coffee cup',
-  'compass',
-  'computer',
-  'cookie',
-  'cooler',
-  'couch',
-  'cow',
-  'crab',
-  'crayon',
-  'crocodile',
-  'crown',
-  'cruise ship',
-  'cup',
-  'diamond',
-  'dishwasher',
-  'diving board',
-  'dog',
-  'dolphin',
-  'donut',
-  'door',
-  'dragon',
-  'dresser',
-  'drill',
-  'drums',
-  'duck',
-  'dumbbell',
-  'ear',
-  'elbow',
-  'elephant',
-  'envelope',
-  'eraser',
-  'eye',
-  'eyeglasses',
-  'face',
-  'fan',
-  'feather',
-  'fence',
-  'finger',
-  'fire hydrant',
-  'fireplace',
-  'firetruck',
-  'fish',
-  'flamingo',
-  'flashlight',
-  'flip flops',
-  'floor lamp',
-  'flower',
-  'flying saucer',
-  'foot',
-  'fork',
-  'frog',
-  'frying pan',
-  'garden',
-  'garden hose',
-  'giraffe',
-  'goatee',
-  'golf club',
-  'grapes',
-  'grass',
-  'guitar',
-  'hamburger',
-  'hammer',
-  'hand',
-  'harp',
-  'hat',
-  'headphones',
-  'hedgehog',
-  'helicopter',
-  'helmet',
-  'hexagon',
-  'hockey puck',
-  'hockey stick',
-  'horse',
-  'hospital',
-  'hot air balloon',
-  'hot dog',
-  'hot tub',
-  'hourglass',
-  'house',
-  'house plant',
-  'hurricane',
-  'ice cream',
-  'jacket',
-  'jail',
-  'kangaroo',
-  'key',
-  'keyboard',
-  'knee',
-  'knife',
-  'ladder',
-  'lantern',
-  'laptop',
-  'leaf',
-  'leg',
-  'light bulb',
-  'lighter',
-  'lighthouse',
-  'lightning',
-  'line',
-  'lion',
-  'lipstick',
-  'lobster',
-  'lollipop',
-  'mailbox',
-  'map',
-  'marker',
-  'matches',
-  'megaphone',
-  'mermaid',
-  'microphone',
-  'microwave',
-  'monkey',
-  'moon',
-  'mosquito',
-  'motorbike',
-  'mountain',
-  'mouse',
-  'moustache',
-  'mouth',
-  'mug',
-  'mushroom',
-  'nail',
-  'necklace',
-  'nose',
-  'ocean',
-  'octagon',
-  'octopus',
-  'onion',
-  'oven',
-  'owl',
-  'paintbrush',
-  'paint can',
-  'palm tree',
-  'panda',
-  'pants',
-  'paper clip',
-  'parachute',
-  'parrot',
-  'passport',
-  'peanut',
-  'pear',
-  'peas',
-  'pencil',
-  'penguin',
-  'piano',
-  'pickup truck',
-  'picture frame',
-  'pig',
-  'pillow',
-  'pineapple',
-  'pizza',
-  'pliers',
-  'police car',
-  'pond',
-  'pool',
-  'popsicle',
-  'postcard',
-  'potato',
-  'power outlet',
-  'purse',
-  'rabbit',
-  'raccoon',
-  'radio',
-  'rain',
-  'rainbow',
-  'rake',
-  'remote control',
-  'rhinoceros',
-  'rifle',
-  'river',
-  'roller coaster',
-  'rollerskates',
-  'sailboat',
-  'sandwich',
-  'saw',
-  'saxophone',
-  'school bus',
-  'scissors',
-  'scorpion',
-  'screwdriver',
-  'sea turtle',
-  'see saw',
-  'shark',
-  'sheep',
-  'shoe',
-  'shorts',
-  'shovel',
-  'sink',
-  'skateboard',
-  'skull',
-  'skyscraper',
-  'sleeping bag',
-  'smiley face',
-  'snail',
-  'snake',
-  'snorkel',
-  'snowflake',
-  'snowman',
-  'soccer ball',
-  'sock',
-  'speedboat',
-  'spider',
-  'spoon',
-  'spreadsheet',
-  'square',
-  'squiggle',
-  'squirrel',
-  'stairs',
-  'star',
-  'steak',
-  'stereo',
-  'stethoscope',
-  'stitches',
-  'stop sign',
-  'stove',
-  'strawberry',
-  'streetlight',
-  'string bean',
-  'submarine',
-  'suitcase',
-  'sun',
-  'swan',
-  'sweater',
-  'swing set',
-  'sword',
-  'syringe',
-  'table',
-  'teapot',
-  'teddy-bear',
-  'telephone',
-  'television',
-  'tennis racquet',
-  'tent',
-  'The Eiffel Tower',
-  'The Great Wall of China',
-  'The Mona Lisa',
-  'tiger',
-  'toaster',
-  'toe',
-  'toilet',
-  'tooth',
-  'toothbrush',
-  'toothpaste',
-  'tornado',
-  'tractor',
-  'traffic light',
-  'train',
-  'tree',
-  'triangle',
-  'trombone',
-  'truck',
-  'trumpet',
-  't-shirt',
-  'umbrella',
-  'underwear',
-  'van',
-  'vase',
-  'violin',
-  'washing machine',
-  'watermelon',
-  'waterslide',
-  'whale',
-  'wheel',
-  'windmill',
-  'wine bottle',
-  'wine glass',
-  'wristwatch',
-  'yoga',
-  'zebra',
-  'zigzag',
-]
-
 const hasGetUserMedia = () => !!navigator.mediaDevices?.getUserMedia
 
 if (hasGetUserMedia()) {
@@ -482,6 +143,7 @@ function enableCam(event) {
 
   gameState = GameStates.STARTED
   gameView.style.display = 'flex'
+  gameContainer.style.display = 'flex'
   webcamButton.style.display = 'none'
 
   if (webcamRunning === true) {
@@ -507,7 +169,6 @@ function enableCam(event) {
 
 let lastVideoTime = -1
 let results = undefined
-
 
 async function runGame() {
   canvasElement.style.width = video.videoWidth
@@ -603,7 +264,7 @@ async function runGame() {
     }
 
     // Time's UP
-    if (frame >= 60 * 5) {
+    if (frame >= 60 * 23) {
       console.log('game over')
       resultPopup.style.display = 'block'
       resultText.innerHTML = `Time's up!`
@@ -618,3 +279,10 @@ async function runGame() {
 }
 
 restartButton.addEventListener('click', resetGame)
+restartButtonControl.addEventListener('click', resetGame)
+
+temperatureInput.addEventListener('change', (e) => {
+  console.log(e.target.value)
+  temperature = e.target.value
+  temperatureValueSpan.innerHTML = e.target.value
+})
