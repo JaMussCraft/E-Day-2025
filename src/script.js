@@ -37,6 +37,8 @@ const temperatureInput = document.getElementById('temperature')
 const temperatureValueSpan = document.getElementById('temperatureValue')
 const viewHandlandmarks = document.getElementById('viewHandlandmarks')
 
+const colorSelect = document.getElementById('drawingColor')
+
 // Game Logic
 const GameStates = {
   NOT_STARTED: 'notStarted',
@@ -51,6 +53,8 @@ let prompt = null
 let temperature = 1
 
 let showHandLandmarks = false
+
+let strokeColor = 'red'
 
 async function llmGuess(imageDataURL, followQuestion, frame) {
   const response = await openai.chat.completions.create({
@@ -227,7 +231,7 @@ async function runGame() {
             y: y,
           })
 
-          videoCtx.strokeStyle = 'red'
+          videoCtx.strokeStyle = strokeColor
           videoCtx.lineWidth = 5
           videoCtx.beginPath()
 
@@ -250,7 +254,7 @@ async function runGame() {
     }
 
     // Draw Strokes
-    videoCtx.strokeStyle = 'red'
+    videoCtx.strokeStyle = strokeColor
     videoCtx.lineWidth = 5
     videoCtx.beginPath()
 
@@ -284,7 +288,7 @@ async function runGame() {
     }
 
     // Time's UP
-    if (frame >= 60 * 5) {
+    if (frame >= 60 * 23) {
       console.log('game over')
       resultPopup.style.display = 'block'
       resultText.innerHTML = `Time's up!`
@@ -318,4 +322,8 @@ explanationButton.addEventListener('click', () => {
     behavior: 'smooth',
   })
   console.log('display explana')
+})
+
+colorSelect.addEventListener('change', (e) => {
+  strokeColor = e.target.value
 })

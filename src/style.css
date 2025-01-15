@@ -96,8 +96,24 @@ button:hover {
 
 /* Mediapipe */
 
+@keyframes titlePop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 h1 {
-  color: #007f8b;
+  font-size: 4rem;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-weight: 800;
+  text-align: center;
+  margin: 2rem 0;
+  background: linear-gradient(45deg, #e0dd2c, #aae9e6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  letter-spacing: 2px;
+  animation: titlePop 0.6s ease-out forwards;
 }
 
 h2 {
