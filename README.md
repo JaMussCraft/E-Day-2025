@@ -1,6 +1,6 @@
 # Air Draw
 
-<img src="./public/images/contact_room_screenshot.jpeg" alt="Project Image" width="100%">
+<img src="./public/images/gameplay.jpg" alt="Project Image" width="100%">
 
 ## Description
 
