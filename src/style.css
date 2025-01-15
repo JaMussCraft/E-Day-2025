@@ -97,23 +97,48 @@ button:hover {
 /* Mediapipe */
 
 @keyframes titlePop {
-  0% { transform: scale(0.8); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  0% { 
+      transform: scale(0.8) rotate(-2deg); 
+      opacity: 0; 
+  }
+  50% { 
+      transform: scale(1.1) rotate(1deg); 
+  }
+  100% { 
+      transform: scale(1) rotate(0deg); 
+      opacity: 1; 
+  }
 }
 
 h1 {
   font-size: 4rem;
   font-family: 'Segoe UI', system-ui, sans-serif;
-  font-weight: 800;
+  font-weight: 900;
   text-align: center;
-  margin: 2rem 0;
-  background: linear-gradient(45deg, #e0dd2c, #aae9e6);
+  margin: 2.5rem 0;
+  background: linear-gradient(45deg, 
+      #FF6B6B, 
+      #4ECDC4,
+      #45B7D1,
+      #96E6B3);
+  background-size: 300% 300%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-  letter-spacing: 2px;
-  animation: titlePop 0.6s ease-out forwards;
+  text-shadow: 
+      3px 3px 6px rgba(0,0,0,0.2),
+      -1px -1px 4px rgba(255,255,255,0.3);
+  letter-spacing: 4px;
+  animation: 
+      titlePop 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards,
+      gradient 8s ease infinite;
+  transform-origin: center;
+}
+
+@keyframes gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 h2 {
