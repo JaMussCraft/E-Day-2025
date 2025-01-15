@@ -1,4 +1,5 @@
 import {
+  DrawingUtils,
   FilesetResolver,
   GestureRecognizer,
 } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/vision_bundle.js'
@@ -31,6 +32,7 @@ const promptDisplay = document.getElementById('promptDisplay')
 const gameContainer = document.getElementById('gameContainer')
 const temperatureInput = document.getElementById('temperature')
 const temperatureValueSpan = document.getElementById('temperatureValue')
+const viewHandlandmarks = document.getElementById('viewHandlandmarks')
 
 // Game Logic
 const GameStates = {
@@ -44,6 +46,8 @@ let frame = 1
 let prompt = null
 
 let temperature = 1
+
+let showHandLandmarks = false
 
 async function llmGuess(imageDataURL, followQuestion, frame) {
   const response = await openai.chat.completions.create({
@@ -189,17 +193,30 @@ async function runGame() {
       results = gestureRecognizer.recognizeForVideo(video, startTimeMs)
     }
 
-    // videoCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
-
     videoCtx.save()
+    const drawingUtils = new DrawingUtils(videoCtx)
 
     if (results.gestures.length > 0) {
       const gesture = results.gestures[0][0]
       const categoryName = gesture.categoryName
       const score = gesture.score
 
+      if (showHandLandmarks) {
+        for (const landmarks of results.landmarks) {
+          drawingUtils.drawConnectors(landmarks, GestureRecognizer.HAND_CONNECTIONS, {
+            color: '#FFFF00',
+            lineWidth: 3,
+          })
+          drawingUtils.drawLandmarks(landmarks, {
+            color: '#FFA500',
+            lineWidth: 1,
+          })
+        }
+      }
+
       if (categoryName == 'Pointing_Up') {
         for (const landmarks of results.landmarks) {
+          // Air Draw Strokes
           const { x, y } = landmarks[8]
 
           strokeCoors.push({
@@ -285,4 +302,8 @@ temperatureInput.addEventListener('change', (e) => {
   console.log(e.target.value)
   temperature = e.target.value
   temperatureValueSpan.innerHTML = e.target.value
+})
+
+viewHandlandmarks.addEventListener('change', () => {
+  showHandLandmarks = !showHandLandmarks
 })
