@@ -85,7 +85,7 @@ async function llmGuess(imageDataURL, followQuestion, frame) {
   console.log(guess, prompt, 'correct?', guess === prompt)
   if (guess.toLowerCase() === prompt.toLowerCase()) {
     resultPopup.style.display = 'block'
-    resultText.innerHTML = `You won with ${23 - frame / 60} seconds remaining!`
+    resultText.innerHTML = `You won with ${23 - frame / 120} seconds remaining!`
     console.log('YOU WIN')
     gameState = GameStates.COMPLETED
   }
@@ -109,7 +109,7 @@ const resetGame = () => {
     const randomIndex = Math.floor(Math.random() * prompts.length)
     prompt = prompts[randomIndex]
     promptDisplay.innerHTML = `Try to draw a ${prompt} !`
-  }, 1500)
+  }, 3000)
 }
 
 // MEDIAPIPE MODEL
@@ -273,7 +273,7 @@ async function runGame() {
     videoCtx.restore()
 
     // LLM guesses every 2 seconds
-    if (frame >= 180 && frame % 120 == 0) {
+    if (frame >= 360 && frame % 120 == 0) {
       const base64String = canvasElement.toDataURL('image/jpeg')
       llmGuess(
         canvasElement.toDataURL('image/jpeg'),
@@ -283,12 +283,12 @@ async function runGame() {
     }
 
     // starting couting down when 3 seconds has passed
-    if (180 <= frame && frame <= 60 * 23 && frame % 60 == 0) {
-      promptDisplay.innerHTML = `${23 - frame / 60}`
+    if (360 <= frame && frame <= 120 * 23 && frame % 120 == 0) {
+      promptDisplay.innerHTML = `${23 - frame / 120}`
     }
 
     // Time's UP
-    if (frame >= 60 * 23) {
+    if (frame >= 120 * 23) {
       console.log('game over')
       resultPopup.style.display = 'block'
       resultText.innerHTML = `Time's up!`
@@ -317,6 +317,7 @@ viewHandlandmarks.addEventListener('change', () => {
 
 explanationButton.addEventListener('click', () => {
   explanationSection.style.display = 'block'
+  resultPopup.style.display = 'none'
   window.scrollTo({
     top: 1200,
     behavior: 'smooth',
