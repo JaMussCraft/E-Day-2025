@@ -233,3 +233,126 @@ footer {
 #clearButton:hover {
   background: #0056b3;
 }
+
+/* Info Buttons */
+
+.control-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.info-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+  background: #e0e0e0;
+  color: #505050;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.info-btn:hover {
+  background: #d0d0d0;
+}
+
+.info-btn::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 5px 10px;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.info-btn:hover::before {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Explanations */
+
+.explanations-section {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  display: none;
+}
+
+.explanation-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.explanation-card h3 {
+  color: #2c3e50;
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.explanation-card p {
+  color: #495057;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Add styling for introduction section */
+h2:first-of-type {
+  max-width: 850px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  color: #2c3e50;
+  font-size: 1.25rem;
+  line-height: 1.6;
+  text-align: center;
+}
+
+p:first-of-type {
+  max-width: 800px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+  color: #495057;
+  line-height: 1.6;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+
+h2:nth-of-type(2) {
+  max-width: 800px;
+  margin: 2rem auto 1rem;
+  padding: 0 1rem;
+  color: #2c3e50;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+p:nth-of-type(2) {
+  max-width: 800px;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  background: #fff3cd;
+  border-radius: 4px;
+  color: #856404;
+  line-height: 1.6;
+  border: 1px solid #ffeeba;
+}

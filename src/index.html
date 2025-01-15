@@ -14,15 +14,25 @@
         <h1>Air Draw</h1>
     </header>
 
-    <h2>This is a demo built for E-Day 2025 at the University of Kentucky and Nosu AI Hackathon. The idea is to recreate
-        the "Quick, Draw!" game from Google with a different way to draw and recognize the doodle.</h2>
-    <h2>Explanations:</h2>
+    <h2>
+        Welcome to Air Draw! Have you ever wished you could draw in thin air and have a computer understand what you're
+        sketching? That's what we're exploring today! This project is all about the magic of Artificial Intelligence
+        (AI)
+        - making computers smart enough to do things we usually think only humans can. We've combined a few cool AI
+        techniques: Computer Vision, Machine Learning, and a Large Language Model to make it happen. Let's see how it
+        all works!
+    </h2>
+
     <p>
-        Instead of drawing with your fingers on a screen, you will "draw in the air". Simply face your webcam and face
+        Project Background: This is a demo built for E-Day 2025 at the University of Kentucky and Nosu AI Hackathon. The
+        idea is to recreate
+        the "Quick, Draw!" game from Google with a different way to draw and recognize the doodle. Instead of drawing
+        with your fingers on a screen, you will "draw in the air". Simply face your webcam and face
         your right hand with your index finger pointing up to the webcam and start drawing!
         Your doodle will be recognized by an LLM every 2 seconds or so, if the LLM guesses right then you win! You will
         need to make the LLM guess right under 20 seconds!
     </p>
+
     <h2>Instructions:</h2>
     <p>Click on start to begin the game. You will need to give your browser permission to access your webcam. You goal
         is to draw a doodle of the given prompt under 20 seconds! </p>
@@ -30,7 +40,7 @@
     <button id="webcamButton">
         START (ENABLE WEBCAM)
     </button>
-    
+
     <div id="gameContainer" class="game-container">
         <div id="gameView">
 
@@ -55,9 +65,12 @@
 
         <div class="controls-panel">
             <h3>Drawing Controls</h3>
-            
+
             <div class="control-group">
-                <label for="drawingColor">Color:</label>
+                <div class="control-header">
+                    <label for="drawingColor">Color:</label>
+                    <button class="info-btn" data-tooltip="Choose the color of your drawing strokes">ⓘ</button>
+                </div>
                 <select id="drawingColor">
                     <option value="black">Black</option>
                     <option value="red">Red</option>
@@ -67,16 +80,22 @@
             </div>
 
             <div class="control-group">
-                <label for="temperature">Temperature:</label>
+                <div class="control-header">
+                    <label for="temperature">Temperature:</label>
+                    <button class="info-btn" data-tooltip="Adjust the randomness of the AI predictions">ⓘ</button>
+                </div>
                 <input type="range" id="temperature" min="0" max="2" value="1" step="0.1">
                 <span id="temperatureValue">1</span>
             </div>
 
             <div class="control-group">
-                <label>
-                    <input type="checkbox" id="viewHandlandmarks">
-                    View Hand Landmarks
-                </label>
+                <div class="control-header">
+                    <label>
+                        <input type="checkbox" id="viewHandlandmarks">
+                        View Hand Landmarks
+                    </label>
+                    <button class="info-btn" data-tooltip="Show/hide hand tracking points">ⓘ</button>
+                </div>
             </div>
 
             <div class="control-group">
@@ -88,6 +107,93 @@
     <div id="resultPopup">
         <h2 id="resultText">Time's up!</h2>
         <button id="restartButton">Restart</button>
+        <button id="explanationButton">Explanations</button>
+    </div>
+
+
+    <div id="explanationSection" class="explanations-section">
+        <div class="explanation-card">
+            <h3>🔥 LLM Temperature: Adjust the Creativity!</h3>
+            <p>
+                Imagine you're asking a friend to guess what you're drawing. Sometimes they're very focused and give you
+                the most likely answer.
+                Other times, they're feeling more creative and might guess something a bit more unusual, but still
+                related. That's what this
+                "temperature" slider controls! In our project, we're not using a typical drawing recognition model.
+                Instead, we're using something
+                called a Large Language Model (LLM). Think of an LLM as a super-smart chatbot that's really good with
+                words and understanding
+                what they mean. We ask the LLM to figure out your drawing! A lower temperature (closer to 0) makes the
+                LLM more focused and
+                precise – it will try to give you the "safest," most probable guess. A higher temperature makes it more
+                adventurous and imaginative.
+                It might come up with some surprising, creative guesses that are still related to your drawing! Slide it
+                around and see how the
+                LLM's personality changes!
+            </p>
+        </div>
+
+        <div class="explanation-card">
+            <h3>🧠 Choose Your AI Brain: Different Models, Different Styles!</h3>
+            <p>
+                Just like people have different strengths and ways of thinking, Large Language Models (LLMs) also have
+                their own unique personalities!
+                This control lets you pick which "brain" we're using to understand your air drawing. Each LLM has been
+                trained on a massive amount
+                of text and code, but they learn in slightly different ways. One model might be better at recognizing
+                everyday objects, while another
+                might be a bit more abstract in its thinking. By switching models, you can see how the interpretation of
+                your drawing changes. It's
+                like getting a second (or third, or fourth...) opinion from different AI experts! Try them all out and
+                see which one "gets" your
+                drawing style the best! This demonstrates that there is no one-size-fits-all approach to AI.
+            </p>
+        </div>
+
+        <div class="explanation-card">
+            <h3>👀 See Your Hand Through the AI's Eyes: Hand Landmarks!</h3>
+            <p>
+                How does the computer "see" your hand in the first place? That's where Computer Vision comes in! This is
+                a type of AI that allows
+                computers to "understand" images and videos. In Air Draw, we're using a special computer vision model
+                called MediaPipe to track
+                your hand's movements. This toggle lets you see exactly what the computer sees: little dots called
+                "landmarks" placed on different
+                parts of your hand, like your fingertips and knuckles. These landmarks are like a map of your hand that
+                the computer uses to
+                follow your drawing. It's like seeing the world through the AI's eyes! By understanding where your hand
+                is and how it's moving,
+                the system can translate your air gestures into a drawing.
+            </p>
+        </div>
+        <div class="explanation-card">
+            <h3>🖼️ Air Draw is just a glimpse into the amazing potential of AI!
+            </h3>
+            <p>
+                By combining Computer Vision, Machine
+                Learning and LLMs, we can create interactive and intuitive experiences that blur the lines between the
+                digital and physical worlds. We hope this inspires you to explore the world of AI and maybe even create
+                your own amazing projects. The future of technology is being written right now, and you can be a part of
+                it! Who knows what incredible things we'll be able to draw into existence together? <br><br>
+
+                <strong>Artificial Intelligence (AI):</strong> The broad concept of creating machines that can perform
+                tasks that
+                typically require human intelligence, such as learning, problem-solving, and decision-making.<br><br>
+
+                <strong>Computer Vision:</strong> A field of AI that enables computers to "see" and interpret
+                visual information from
+                images or videos, just like humans do.<br><br>
+
+                <strong>Machine Learning (ML):</strong> A type of AI where computers learn from data without
+                being explicitly programmed.
+                They find patterns and relationships in the data to make predictions or decisions.<br><br>
+
+                <strong>Large Language Model (LLM):</strong> A powerful type of AI that has been trained on a
+                massive amount of text
+                data. LLMs can understand, generate, and translate human language with impressive accuracy. They power
+                many of the AI applications you use every day like chatbots, writing aids, and more!
+            </p>
+        </div>
     </div>
 
     <script type="module" src="script.js"></script>

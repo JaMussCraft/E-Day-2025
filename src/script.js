@@ -22,6 +22,9 @@ const resultText = document.getElementById('resultText')
 const restartButton = document.getElementById('restartButton')
 const restartButtonControl = document.getElementById('restartButtonControl')
 
+const explanationButton = document.getElementById('explanationButton')
+const explanationSection = document.getElementById('explanationSection')
+
 const video = document.getElementById('webcam')
 const canvasElement = document.getElementById('output_canvas')
 const videoCtx = canvasElement.getContext('2d')
@@ -281,7 +284,7 @@ async function runGame() {
     }
 
     // Time's UP
-    if (frame >= 60 * 23) {
+    if (frame >= 60 * 5) {
       console.log('game over')
       resultPopup.style.display = 'block'
       resultText.innerHTML = `Time's up!`
@@ -306,4 +309,13 @@ temperatureInput.addEventListener('change', (e) => {
 
 viewHandlandmarks.addEventListener('change', () => {
   showHandLandmarks = !showHandLandmarks
+})
+
+explanationButton.addEventListener('click', () => {
+  explanationSection.style.display = 'block'
+  window.scrollTo({
+    top: 1200,
+    behavior: 'smooth',
+  })
+  console.log('display explana')
 })
