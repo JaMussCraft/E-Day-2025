@@ -44,6 +44,7 @@ Click on start to begin the game. You will need to give your browser permission 
 - Ability to erase
 - Train my own model on the Quick Draw dataset instead of using LLM api
 - Interface Air Draw on top of Quick Draw
+- https://github.com/magenta/magenta-demos/tree/main
 
 ## Inspirations & Acknowledgements
 
