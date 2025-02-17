@@ -46,7 +46,9 @@ const GameStates = {
   COMPLETED: 'completed',
 }
 let gameState = GameStates.NOT_STARTED
-let frame = 1
+let startTime = null
+let lastLLMTime = null // timestamp of last LLM call
+let gameDuration = 20 // default is 20 seconds
 
 let prompt = null
 
@@ -56,7 +58,8 @@ let showHandLandmarks = false
 
 let strokeColor = 'red'
 
-async function llmGuess(imageDataURL, followQuestion, frame) {
+async function llmGuess(imageDataURL, followQuestion, elapsedTime) {
+  lastLLMTime = performance.now()
   const response = await openai.chat.completions.create({
     model: 'gpt-4o',
     messages: [
@@ -85,21 +88,20 @@ async function llmGuess(imageDataURL, followQuestion, frame) {
   console.log(guess, prompt, 'correct?', guess === prompt)
   if (guess.toLowerCase() === prompt.toLowerCase()) {
     resultPopup.style.display = 'block'
-    resultText.innerHTML = `You won with ${23 - frame / 120} seconds remaining!`
+    resultText.innerHTML = `You won with ${Math.floor(gameDuration + 3 - elapsedTime)} seconds remaining!`
     console.log('YOU WIN')
     gameState = GameStates.COMPLETED
   }
   doodleGuessElement.innerHTML = "LLM's Guess: " + guess
 }
 
-const resetGame = () => {
+const resetGame = async (delay) => {
   resultPopup.style.display = 'none'
-  frame = 1
 
-  gameState = GameStates.NOT_STARTED
-  console.log('resetted game')
+  gameState = GameStates.STARTED
+  console.log('resetted and started new game')
 
-  // videoCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
+  videoCtx.clearRect(0, 0, canvasElement.width, canvasElement.height)
   strokes = []
   strokeCoors = []
 
@@ -109,6 +111,9 @@ const resetGame = () => {
     const randomIndex = Math.floor(Math.random() * prompts.length)
     prompt = prompts[randomIndex]
     promptDisplay.innerHTML = `Try to draw a ${prompt} !`
+    startTime = performance.now()
+    gameState = GameStates.STARTED
+    window.requestAnimationFrame(runGame)
   }, 3000)
 }
 
@@ -173,7 +178,9 @@ function enableCam(event) {
       const randomIndex = Math.floor(Math.random() * prompts.length)
       prompt = prompts[randomIndex]
       promptDisplay.innerHTML = `Try to draw a ${prompt} !`
-      runGame()
+      startTime = performance.now()
+      gameState = GameStates.STARTED
+      window.requestAnimationFrame(runGame)
     })
   })
 }
@@ -181,7 +188,7 @@ function enableCam(event) {
 let lastVideoTime = -1
 let results = undefined
 
-async function runGame() {
+async function runGame(currentTime) {
   canvasElement.style.width = video.videoWidth
   canvasElement.style.height = video.videoHeight
   canvasElement.width = video.videoWidth
@@ -192,7 +199,10 @@ async function runGame() {
     await gestureRecognizer.setOptions({ runningMode: 'VIDEO' })
   }
 
+  const elapsedTime = (currentTime - startTime) / 1000 // in seconds
+
   if (gameState !== GameStates.COMPLETED) {
+    console.log('game logic running!')
     let startTimeMs = performance.now()
 
     if (lastVideoTime !== video.currentTime) {
@@ -272,23 +282,25 @@ async function runGame() {
 
     videoCtx.restore()
 
-    // LLM guesses every 2 seconds
-    if (frame >= 360 && frame % 120 == 0) {
+    // LLM starts guessing after 3 seconds and guesses every 2 seconds
+    const guessingInterval = 2
+    if (elapsedTime > 3 && (currentTime - lastLLMTime) / 1000 >= guessingInterval) {
       const base64String = canvasElement.toDataURL('image/jpeg')
+      // console.log('querying LLM...')
       llmGuess(
         canvasElement.toDataURL('image/jpeg'),
         'Guess what this doodle is from one of the 345 categories from Quick Draw. Reply with "Blank" when the image is one color. Only reply with the category name. Ignore color of doodle.',
-        frame
+        elapsedTime
       )
     }
 
     // starting couting down when 3 seconds has passed
-    if (360 <= frame && frame <= 120 * 23 && frame % 120 == 0) {
-      promptDisplay.innerHTML = `${23 - frame / 120}`
+    if (elapsedTime > 3 && elapsedTime <= gameDuration + 4) {
+      promptDisplay.innerHTML = `${gameDuration + 3 - Math.floor(elapsedTime)}`
     }
 
     // Time's UP
-    if (frame >= 120 * 23) {
+    if (elapsedTime > gameDuration + 3) {
       console.log('game over')
       resultPopup.style.display = 'block'
       resultText.innerHTML = `Time's up!`
@@ -296,9 +308,8 @@ async function runGame() {
     }
   }
 
-  if (webcamRunning === true) {
+  if (webcamRunning === true && gameState === GameStates.STARTED) {
     window.requestAnimationFrame(runGame)
-    frame += 1
   }
 }
 
