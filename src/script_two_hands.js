@@ -49,7 +49,7 @@ const GameStates = {
 let gameState = GameStates.NOT_STARTED
 let startTime = null
 let lastLLMTime = null // timestamp of last LLM call
-let gameDuration = 10 // default is 20 seconds
+let gameDuration = 20 // default is 20 seconds
 
 let prompt = null
 
@@ -340,7 +340,7 @@ async function runGame(currentTime) {
       // console.log('querying LLM...')
       llmGuess(
         canvasElement.toDataURL('image/jpeg'),
-        'Guess what this doodle is from one of the 345 categories from Quick Draw. Reply with "Blank" when the image is one color. Only reply with the category name. Ignore color of doodle.',
+        `Guess what this doodle is from one of the categories listed below. Reply with "Blank" when the image is one color. Only reply with the category name given. Ignore color of doodle.\n\n ${prompts}`,
         elapsedTime
       )
     }
