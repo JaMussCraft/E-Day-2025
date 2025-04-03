@@ -54,7 +54,7 @@ let prompt = null
 
 let temperature = 1
 
-let showHandLandmarks = false
+let showHandLandmarks = true
 
 let strokeColor = 'red'
 
@@ -136,10 +136,15 @@ const loadModels = async () => {
       delegate: 'GPU',
     },
     runningMode: runningMode,
-    min_hand_detection_confidence: 0.85,
+    numHands: 2,
+    minHandDetectionConfidence: 0.85,
   })
+
+  gestureRecognizer.setOptions({numHands: 2})
+  console.log(gestureRecognizer)
 }
 loadModels()
+
 
 // AIR DRAW
 
@@ -209,6 +214,8 @@ async function runGame(currentTime) {
       lastVideoTime = video.currentTime
       results = gestureRecognizer.recognizeForVideo(video, startTimeMs)
     }
+
+    console.log(results)
 
     videoCtx.save()
     const drawingUtils = new DrawingUtils(videoCtx)
