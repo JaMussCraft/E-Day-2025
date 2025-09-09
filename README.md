@@ -2,6 +2,8 @@
 
 <img src="./public/images/gameplay.jpg" alt="Project Image" width="100%">
 
+[Video Demo](https://youtu.be/FshbCPUwbmM)
+
 ## Description
 
 This project is an interactive AI-themed demonstration for Engineering Day at the University of Kentucky in 2025. Its purpose is to expose K-12 to AI concepts and sparks inspirations in them. The idea is to recreate the "Quick, Draw!" game from Google with a different way to draw and recognize the doodle. Instead of drawing with your fingers on a screen, you will "draw in the air".
